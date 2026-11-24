@@ -1,0 +1,65 @@
+{
+  "id": "ticktick-habits",
+  "name": "TickTick Habits",
+  "version": "1.0.0",
+  "description": "Today's TickTick habits: done and still due.",
+  "author": "You",
+  "license": "MIT",
+  "minAppVersion": "0.18.0",
+  "moduleType": "ticktick-habits",
+  "category": "Personal",
+  "icon": "circle-check",
+  "defaultConfig": {
+    "title": "Habits",
+    "titleFontSize": 0,
+    "showDone": true,
+    "showDue": true,
+    "showWeekly": true
+  },
+  "defaultSize": { "w": 320, "h": 420 },
+  "exports": { "component": "default" },
+  "secrets": [
+    {
+      "key": "api_token",
+      "label": "TickTick API Token",
+      "description": "From TickTick web: Avatar → Settings → Account → API Token",
+      "required": true,
+      "placeholder": "tp_..."
+    }
+  ],
+  "allowedDomains": ["api.ticktick.com"],
+  "permissions": ["network"],
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "title": {
+        "type": "string",
+        "title": "Header title",
+        "default": "Habits"
+      },
+      "titleFontSize": {
+        "type": "integer",
+        "title": "Title font size (px, 0 = relative)",
+        "default": 0,
+        "minimum": 0,
+        "maximum": 48
+      },
+      "showDone": {
+        "type": "boolean",
+        "title": "Show done today",
+        "default": true
+      },
+      "showDue": {
+        "type": "boolean",
+        "title": "Show due today",
+        "default": true
+      },
+      "showWeekly": {
+        "type": "boolean",
+        "title": "Show weekly habits still due",
+        "description": "Habits set to N times per week, not tied to a specific day.",
+        "default": true
+      }
+    }
+  }
+}

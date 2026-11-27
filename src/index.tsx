@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { hostFrameStyle } from './host-style';
 
 const { pluginFetch } = window.__HS_SDK__ || {};
-const VERSION = '1.0.1';
+const VERSION = '1.0.2';
 
 const DAY_MAP = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 
@@ -76,6 +76,7 @@ export default function TickTickHabits({ config = {}, style = {} }) {
   const [done, setDone] = useState([]);
   const [due, setDue] = useState([]);
   const [weekly, setWeekly] = useState([]);
+  const [sections, setSections] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [lastSynced, setLastSynced] = useState(null);
@@ -97,6 +98,22 @@ export default function TickTickHabits({ config = {}, style = {} }) {
 
       const active = habits.filter((h) => !h.archivedTime && Number(h.status) === 0);
       const ids = active.map((h) => h.id).filter(Boolean);
+
+      let sectionMap = {};
+      let sectionOrder = [];
+      try {
+        const sRes = await pluginFetch('ticktick', {
+          url: 'https://api.ticktick.com/open/v1/habit/sections',
+          secretInjections: { header: { Authorization: 'Bearer {{api_token}}' } },
+          cacheTtlMs: 60000,
+        });
+        if (sRes.ok) {
+          const secs = (await sRes.json()) || [];
+          secs.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+          sectionOrder = secs;
+          secs.forEach((s) => { sectionMap[s.id] = s.name || 'Section'; });
+        }
+      } catch {}
 
       const today = new Date();
       const stamp = yyyymmdd(today);
@@ -147,6 +164,9 @@ export default function TickTickHabits({ config = {}, style = {} }) {
           goal: h.goal,
           unit: h.unit,
           value: todayCheck ? todayCheck.value : 0,
+          sectionId: h.sectionId || '',
+          sectionName: sectionMap[h.sectionId] || 'Other',
+          doneToday,
         };
 
         if (doneToday && showDone) doneList.push(item);
@@ -165,6 +185,25 @@ export default function TickTickHabits({ config = {}, style = {} }) {
       setDone(doneList);
       setDue(dueList);
       setWeekly(weeklyList);
+
+      const all = [...dueList, ...weeklyList, ...doneList];
+      const grouped = {};
+      all.forEach((item) => {
+        const key = item.sectionId || 'other';
+        if (!grouped[key]) {
+          grouped[key] = { id: key, name: item.sectionName, items: [] };
+        }
+        grouped[key].items.push(item);
+      });
+      const ordered = [];
+      sectionOrder.forEach((s) => {
+        if (grouped[s.id]) ordered.push(grouped[s.id]);
+      });
+      Object.keys(grouped).forEach((k) => {
+        if (!ordered.find((g) => g.id === k)) ordered.push(grouped[k]);
+      });
+      setSections(ordered);
+
       setLastSynced(new Date());
     } catch (err) {
       setError(err.message || 'Failed to load');
@@ -230,7 +269,7 @@ export default function TickTickHabits({ config = {}, style = {} }) {
           <Row
             key={item.id}
             item={item}
-            checked={checked}
+            checked={item.doneToday}
             extra={item.need ? `${item.have}/${item.need}` : null}
           />
         ))
@@ -263,9 +302,15 @@ export default function TickTickHabits({ config = {}, style = {} }) {
           columnGap: 18,
         }}
       >
-        {showDue && <Section label="Due today" items={due} checked={false} empty="Nothing due" />}
-        {showWeekly && <Section label="This week" items={weekly} checked={false} empty="Weekly goals met" />}
-        {showDone && <Section label="Done today" items={done} checked empty="Nothing checked in yet" />}
+        {sections.map((sec) => (
+          <Section
+            key={sec.id}
+            label={sec.name}
+            items={sec.items}
+            checked={false}
+            empty=""
+          />
+        ))}
       </div>
 
       {lastSynced && (

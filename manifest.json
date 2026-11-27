@@ -1,7 +1,7 @@
 {
   "id": "ticktick-habits",
   "name": "TickTick Habits",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Today's TickTick habits: done and still due.",
   "author": "You",
   "license": "MIT",
@@ -14,7 +14,8 @@
     "titleFontSize": 0,
     "showDone": true,
     "showDue": true,
-    "showWeekly": true
+    "showWeekly": true,
+    "sections": ""
   },
   "defaultSize": {
     "w": 320,
@@ -52,6 +53,12 @@
         "default": 0,
         "minimum": 0,
         "maximum": 48
+      },
+      "sections": {
+        "type": "string",
+        "title": "Sections to show",
+        "description": "Comma-separated names. Empty shows all. Partial match works (Personal matches Personal Maintenance).",
+        "default": ""
       },
       "showDone": {
         "type": "boolean",

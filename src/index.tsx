@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { hostFrameStyle } from './host-style';
 
 const { pluginFetch } = window.__HS_SDK__ || {};
-const VERSION = '1.0.2';
+const VERSION = '1.0.3';
 
 const DAY_MAP = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 
@@ -71,6 +71,7 @@ export default function TickTickHabits({ config = {}, style = {} }) {
     showDone = true,
     showDue = true,
     showWeekly = true,
+    sections: sectionsFilter = '',
   } = config;
 
   const [done, setDone] = useState([]);
@@ -218,6 +219,16 @@ export default function TickTickHabits({ config = {}, style = {} }) {
     return () => clearInterval(t);
   }, [showDone, showDue, showWeekly]);
 
+  const wanted = String(sectionsFilter || '')
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+  const visibleSections = wanted.length
+    ? sections.filter((sec) =>
+        wanted.some((w) => (sec.name || '').toLowerCase().includes(w))
+      )
+    : sections;
+
   const titleStyle = titleFontSize > 0
     ? { fontWeight: 600, fontSize: `${titleFontSize}px`, opacity: 0.95 }
     : { fontWeight: 600, fontSize: '1.15em', opacity: 0.95 };
@@ -302,7 +313,7 @@ export default function TickTickHabits({ config = {}, style = {} }) {
           columnGap: 18,
         }}
       >
-        {sections.map((sec) => (
+        {visibleSections.map((sec) => (
           <Section
             key={sec.id}
             label={sec.name}

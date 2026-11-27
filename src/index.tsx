@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { hostFrameStyle } from './host-style';
 
 const { pluginFetch } = window.__HS_SDK__ || {};
-const VERSION = '1.0.3';
+const VERSION = '1.0.4';
 
 const DAY_MAP = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 
@@ -269,8 +269,21 @@ export default function TickTickHabits({ config = {}, style = {} }) {
   );
 
   const Section = ({ label, items, checked, empty }) => (
-    <div style={{ marginBottom: 10, breakInside: 'avoid' }}>
-      <div style={{ fontWeight: 600, fontSize: '0.8em', opacity: 0.65, margin: '4px 0' }}>
+    <div
+      style={{
+        minWidth: 160,
+        maxWidth: 240,
+        flex: '1 0 160px',
+        background: 'rgba(255,255,255,0.04)',
+        borderRadius: 8,
+        padding: '8px 10px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        alignSelf: 'flex-start',
+      }}
+    >
+      <div style={{ fontWeight: 600, fontSize: '0.85em', opacity: 0.8, marginBottom: 4 }}>
         {label} · {items.length}
       </div>
       {items.length === 0 ? (
@@ -308,9 +321,11 @@ export default function TickTickHabits({ config = {}, style = {} }) {
           flex: 1,
           minHeight: 0,
           overflow: 'auto',
-          columnWidth: 150,
-          columnFill: 'auto',
-          columnGap: 18,
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'flex-start',
+          gap: 12,
+          paddingBottom: 4,
         }}
       >
         {visibleSections.map((sec) => (

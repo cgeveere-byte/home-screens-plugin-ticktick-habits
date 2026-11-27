@@ -1,7 +1,7 @@
 {
   "id": "ticktick-habits",
   "name": "TickTick Habits",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Today's TickTick habits: done and still due.",
   "author": "You",
   "license": "MIT",
@@ -16,19 +16,28 @@
     "showDue": true,
     "showWeekly": true
   },
-  "defaultSize": { "w": 320, "h": 420 },
-  "exports": { "component": "default" },
+  "defaultSize": {
+    "w": 320,
+    "h": 420
+  },
+  "exports": {
+    "component": "default"
+  },
   "secrets": [
     {
       "key": "api_token",
       "label": "TickTick API Token",
-      "description": "From TickTick web: Avatar → Settings → Account → API Token",
+      "description": "From TickTick web: Avatar \u2192 Settings \u2192 Account \u2192 API Token",
       "required": true,
       "placeholder": "tp_..."
     }
   ],
-  "allowedDomains": ["api.ticktick.com"],
-  "permissions": ["network"],
+  "allowedDomains": [
+    "api.ticktick.com"
+  ],
+  "permissions": [
+    "network"
+  ],
   "configSchema": {
     "type": "object",
     "properties": {

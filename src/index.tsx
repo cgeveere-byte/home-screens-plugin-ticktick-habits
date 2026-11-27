@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { hostFrameStyle } from './host-style';
 
 const { pluginFetch } = window.__HS_SDK__ || {};
-const VERSION = '1.0.0';
+const VERSION = '1.0.1';
 
 const DAY_MAP = { SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6 };
 
@@ -219,7 +219,7 @@ export default function TickTickHabits({ config = {}, style = {} }) {
   );
 
   const Section = ({ label, items, checked, empty }) => (
-    <div style={{ marginBottom: 10 }}>
+    <div style={{ marginBottom: 10, breakInside: 'avoid' }}>
       <div style={{ fontWeight: 600, fontSize: '0.8em', opacity: 0.65, margin: '4px 0' }}>
         {label} · {items.length}
       </div>
@@ -253,7 +253,16 @@ export default function TickTickHabits({ config = {}, style = {} }) {
       {error && <div style={{ color: '#f87171', fontSize: '0.9em' }}>{error}</div>}
       {loading && done.length === 0 && due.length === 0 && <div style={{ opacity: 0.6 }}>Loading…</div>}
 
-      <div style={{ flex: 1, overflow: 'auto' }}>
+      <div
+        style={{
+          flex: 1,
+          minHeight: 0,
+          overflow: 'auto',
+          columnWidth: 150,
+          columnFill: 'auto',
+          columnGap: 18,
+        }}
+      >
         {showDue && <Section label="Due today" items={due} checked={false} empty="Nothing due" />}
         {showWeekly && <Section label="This week" items={weekly} checked={false} empty="Weekly goals met" />}
         {showDone && <Section label="Done today" items={done} checked empty="Nothing checked in yet" />}
